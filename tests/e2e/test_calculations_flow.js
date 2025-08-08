@@ -23,3 +23,12 @@ test("rejects divide by zero", async ({ page }) => {
   await page.click("form#add-form button");
   await expect(page.locator("#message")).toContainText("Division by zero");
 });
+
+test("can calculate power", async ({ page }) => {
+  await page.fill("input[name=a]", "2");
+  await page.fill("input[name=b]", "3");
+  await page.selectOption("select[name=type]", "Power");
+  await page.click("form#add-form button");
+  await expect(page.locator("#message")).toHaveText(/added/i);
+  await expect(page.locator("#calc-list")).toContainText("2 Power 3 = 8");
+});

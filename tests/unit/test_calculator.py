@@ -2,7 +2,7 @@
 
 import pytest  # Import the pytest framework for writing and running tests
 from typing import Union  # Import Union for type hinting multiple possible types
-from app.operations import add, subtract, multiply, divide  # Import the calculator functions from the operations module
+from app.operations import add, subtract, multiply, divide, power  # Import the calculator functions from the operations module
 
 # Define a type alias for numbers that can be either int or float
 Number = Union[int, float]
@@ -203,6 +203,15 @@ def test_divide(a: Number, b: Number, expected: float) -> None:
     # Assert that the result of divide(a, b) matches the expected value
     assert result == expected, f"Expected divide({a}, {b}) to be {expected}, but got {result}"
 
+
+@pytest.mark.parametrize("a,b,expected", [
+    (2, 3, 8),
+    (5, 0, 1),
+    (2.5, 2, 6.25),
+    (9, 0.5, 3.0),
+])
+def test_power(a: Number, b: Number, expected: Number) -> None:
+    assert power(a, b) == expected
 
 # ---------------------------------------------
 # Negative Test Case: Division by Zero

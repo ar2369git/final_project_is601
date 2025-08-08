@@ -7,6 +7,7 @@ from app.models.calculation import CalculationType
     (CalculationType.Subtract, 5, 2, 3),
     (CalculationType.Multiply, 3, 4, 12),
     (CalculationType.Divide, 10, 2, 5),
+    (CalculationType.Power, 2, 3, 8),
 ])
 def test_compute(type, a, b, expected):
     assert compute(type, a, b) == expected

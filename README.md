@@ -137,6 +137,11 @@ See `.github/workflows/ci.yml` for the full pipeline.
 
 ---
 
+## Docker Repository for this project:
+
+https://hub.docker.com/r/ar2369/final_project_is601
+
+
 ## 📚 Quick Links
 
 - [FastAPI](https://fastapi.tiangolo.com/)

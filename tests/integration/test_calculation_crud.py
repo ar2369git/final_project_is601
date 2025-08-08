@@ -6,40 +6,41 @@ from app.db import init_db, DB_PATH
 from main import app
 
 @pytest.fixture(autouse=True)
-def client():
-    # Reset the SQLite file before each test
-    if DB_PATH.exists():
-        DB_PATH.unlink()
-    init_db()
+def client(tmp_path, monkeypatch):
+    # Point the DB_PATH env var at a fresh file in tmp_path
+    db_file = tmp_path / "test.db"
+    monkeypatch.setenv("DB_PATH", str(db_file))
+    # Re-create all tables
+    init_db()  # 
     return TestClient(app)
 
 @pytest.fixture
-def credentials():
+def user_creds():
     return {
-        "username": "user1",
-        "email": "user1@example.com",
-        "password": "password123",
-        "confirm_password": "password123"
+        "username": "testuser",
+        "email": "testuser@example.com",
+        "password": "pass1234",
+        "confirm_password": "pass1234"
     }
 
-def register_and_get_token(client: TestClient, creds: dict) -> str:
-    # Register a new user :contentReference[oaicite:0]{index=0}
-    r = client.post("/register", json=creds)
-    assert r.status_code == 200
+@pytest.fixture
+def token(client, user_creds):
+    # Register the user
+    reg = client.post("/register", json=user_creds)
+    assert reg.status_code == 200  # 
 
-    # Login to obtain JWT :contentReference[oaicite:1]{index=1}
+    # Login to get JWT
     login_payload = {
-        "username_or_email": creds["username"],
-        "password": creds["password"]
+        "username_or_email": user_creds["username"],
+        "password": user_creds["password"]
     }
-    r = client.post("/login", json=login_payload)
-    assert r.status_code == 200
-    body = r.json()
+    resp = client.post("/login", json=login_payload)
+    assert resp.status_code == 200  # 
+    body = resp.json()
     assert "access_token" in body
     return body["access_token"]
 
-def test_calculation_crud_flow(client: TestClient, credentials: dict):
-    token = register_and_get_token(client, credentials)
+def test_calculation_crud_flow(client, token):
     headers = {"Authorization": f"Bearer {token}"}
 
     # CREATE
@@ -48,19 +49,19 @@ def test_calculation_crud_flow(client: TestClient, credentials: dict):
         json={"a": 10, "b": 5, "type": "Subtract"},
         headers=headers
     )
-    assert create_resp.status_code == 201
+    assert create_resp.status_code == 201  # 
     calc = create_resp.json()
     calc_id = calc["id"]
     assert calc["result"] == 5
 
-    # READ LIST
+    # LIST
     list_resp = client.get("/calculations", headers=headers)
-    assert list_resp.status_code == 200
+    assert list_resp.status_code == 200  # 
     assert any(c["id"] == calc_id for c in list_resp.json())
 
-    # READ SINGLE
+    # RETRIEVE SINGLE
     get_resp = client.get(f"/calculations/{calc_id}", headers=headers)
-    assert get_resp.status_code == 200
+    assert get_resp.status_code == 200  # 
     assert get_resp.json()["result"] == 5
 
     # UPDATE
@@ -74,7 +75,7 @@ def test_calculation_crud_flow(client: TestClient, credentials: dict):
 
     # DELETE
     del_resp = client.delete(f"/calculations/{calc_id}", headers=headers)
-    assert del_resp.status_code == 204
+    assert del_resp.status_code == 204  # 
 
     # VERIFY DELETION
     final_resp = client.get(f"/calculations/{calc_id}", headers=headers)

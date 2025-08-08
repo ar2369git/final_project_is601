@@ -29,6 +29,12 @@ def divide(a: Number, b: Number) -> float:
     result = a / b
     logger.info(f"divide: {a} / {b} = {result}")
     return result
+
+def power(a: Number, b: Number) -> Number:
+    result = a ** b
+    logger.info(f"power: {a} ** {b} = {result}")
+    return result
+
 def perform_operation(calc_type: str, a: float, b: float) -> float:
     """
     Execute the calculation for the given type and operands.
@@ -45,6 +51,8 @@ def perform_operation(calc_type: str, a: float, b: float) -> float:
         if b == 0:
             raise ValueError("Division by zero")
         return a / b
+    elif calc_type == CalculationType.Power.value:
+        return power(a, b)
     else:
         # This error message is now more accurate, showing the string received
         raise ValueError(f"Unsupported calculation type: '{calc_type}'")

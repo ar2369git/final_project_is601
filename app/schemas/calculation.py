@@ -11,6 +11,7 @@ class CalculationType(str, Enum):
     Subtract = "Subtract"
     Multiply = "Multiply"
     Divide = "Divide"
+    Power = "Power"
 
 
 class CalculationBase(BaseModel):

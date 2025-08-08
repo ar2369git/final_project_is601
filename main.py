@@ -121,3 +121,7 @@ def divide(calc: CalculationIn):
     if calc.b == 0:
         raise HTTPException(status_code=400, detail="Division by zero")
     return {"result": calc.a / calc.b}
+
+@app.post("/power", response_model=CalculationOut)
+def power_endpoint(calc: CalculationIn):
+    return {"result": calc.a ** calc.b}

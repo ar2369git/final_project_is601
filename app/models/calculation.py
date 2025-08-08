@@ -13,6 +13,7 @@ class CalculationType(enum.Enum):
     Subtract = "Subtract"
     Multiply = "Multiply"
     Divide = "Divide"
+    Power = "Power"
 
 
 class Calculation(Base):

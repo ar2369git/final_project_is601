@@ -22,5 +22,7 @@ def compute(calc_type: Union[CalculationType, str], a: float, b: float) -> float
         return multiply(a, b)
     elif calc_type == CalculationType.Divide:
         return divide(a, b)
+    elif calc_type == CalculationType.Power:
+        return a ** b
     else:
         raise ValueError(f"Unsupported calculation type: {calc_type}")

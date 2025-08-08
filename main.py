@@ -15,8 +15,6 @@ from app.routers import calculations
 import traceback
 
 
-
-
 # 1) Create FastAPI app and mount your "static" folder (for JS/CSS, etc.)
 app = FastAPI()
 app.include_router(calculations.router)

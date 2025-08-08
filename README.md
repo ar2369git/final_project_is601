@@ -1,266 +1,147 @@
 # 📦 Project Setup
 
-
-
----
-
-# 🧩 1. Install Homebrew (Mac Users Only)
-
-> Skip this step if you're on Windows.
-
-Homebrew is a package manager for macOS.  
-You’ll use it to easily install Git, Python, Docker, etc.
-
-**Install Homebrew:**
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-**Verify Homebrew:**
-
-```bash
-brew --version
-```
-
-If you see a version number, you're good to go.
+This is a FastAPI-based calculator application with JWT authentication, SQLAlchemy for persistence, and full test coverage. These instructions will get you up and running locally (and optionally in Docker) in minutes.
 
 ---
 
-# 🧩 2. Install and Configure Git
-
-
-## Install Git
-
-- **MacOS (using Homebrew)**
+## 🔗 1. Clone the Repo
 
 ```bash
-brew install git
-```
-
-- **Windows**
-
-Download and install [Git for Windows](https://git-scm.com/download/win).  
-Accept the default options during installation.
-
-**Verify Git:**
-
-```bash
-git --version
+git clone <your-repo-url>
+cd <your-repo-name>
 ```
 
 ---
 
-## Configure Git Globals
+## 🐍 2. Python Environment
 
-Set your name and email so Git tracks your commits properly:
+1. **Create & activate** a virtual environment (recommended):
+
+   ```bash
+   python3 -m venv venv
+   # macOS/Linux
+   source venv/bin/activate
+   # Windows
+   venv\Scripts\activate
+   ```
+
+2. **Upgrade pip** and **install dependencies**:
+
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+---
+
+## 🗄️ 3. Database Configuration
+
+By default, this app uses SQLite at `./data/app.db`. You can override this:
+
+- **SQLite** custom path:
+
+  ```bash
+  export DB_PATH=/absolute/path/to/my.db
+  ```
+
+- **PostgreSQL** or other:
+
+  ```bash
+  export DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+  ```
+
+### Initialize the schema
 
 ```bash
-git config --global user.name "Your Name"
-git config --global user.email "your_email@example.com"
-```
-
-Confirm the settings:
-
-```bash
-git config --list
+python -c "from app.db import init_db; init_db()"
 ```
 
 ---
 
-## Generate SSH Keys and Connect to GitHub
+## 📜 4. Environment Variables
 
-> Only do this once per machine.
+Create a `.env` file in the project root (requires `python-dotenv`, already in `requirements.txt`):
 
-1. Generate a new SSH key:
-
-```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
-```
-
-(Press Enter at all prompts.)
-
-2. Start the SSH agent:
-
-```bash
-eval "$(ssh-agent -s)"
-```
-
-3. Add the SSH private key to the agent:
-
-```bash
-ssh-add ~/.ssh/id_ed25519
-```
-
-4. Copy your SSH public key:
-
-- **Mac/Linux:**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | pbcopy
-```
-
-- **Windows (Git Bash):**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | clip
-```
-
-5. Add the key to your GitHub account:
-   - Go to [GitHub SSH Settings](https://github.com/settings/keys)
-   - Click **New SSH Key**, paste the key, save.
-
-6. Test the connection:
-
-```bash
-ssh -T git@github.com
-```
-
-You should see a success message.
-
----
-
-# 🧩 3. Clone the Repository
-
-Now you can safely clone the course project:
-
-```bash
-git clone <repository-url>
-cd <repository-directory>
+```ini
+# .env
+JWT_SECRET_KEY=your-long-random-secret
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
 
 ---
 
-# 🛠️ 4. Install Python 3.10+
-
-## Install Python
-
-- **MacOS (Homebrew)**
+## ▶️ 5. Run the Application
 
 ```bash
-brew install python
-```
-
-- **Windows**
-
-Download and install [Python for Windows](https://www.python.org/downloads/).  
-✅ Make sure you **check the box** `Add Python to PATH` during setup.
-
-**Verify Python:**
-
-```bash
-python3 --version
-```
-or
-```bash
-python --version
-```
-
----
-
-## Create and Activate a Virtual Environment
-
-(Optional but recommended)
-
-```bash
-python3 -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate.bat  # Windows
-```
-
-### Install Required Packages
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-# 🐳 5. (Optional) Docker Setup
-
-> Skip if Docker isn't used in this module.
-
-## Install Docker
-
-- [Install Docker Desktop for Mac](https://www.docker.com/products/docker-desktop/)
-- [Install Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
-
-## Build Docker Image
-
-```bash
-docker build -t <image-name> .
-```
-
-## Run Docker Container
-
-```bash
-docker run -it --rm <image-name>
-```
-
----
-
-# 🚀 6. Running the Project
-
-- **Without Docker**:
-
-```bash
-python main.py
-```
-
-(or update this if the main script is different.)
-
-- **With Docker**:
-
-```bash
-docker run -it --rm <image-name>
-```
-
----
-
-## Running Locally
-
-source venv/bin/activate
-export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+# with auto-reload for development
 uvicorn main:app --reload
+```
 
-
-
----
-
-
-# 🔥 Useful Commands Cheat Sheet
-
-| Action                         | Command                                          |
-| ------------------------------- | ------------------------------------------------ |
-| Install Homebrew (Mac)          | `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` |
-| Install Git                     | `brew install git` or Git for Windows installer |
-| Configure Git Global Username  | `git config --global user.name "Your Name"`      |
-| Configure Git Global Email     | `git config --global user.email "you@example.com"` |
-| Clone Repository                | `git clone <repo-url>`                          |
-| Create Virtual Environment     | `python3 -m venv venv`                           |
-| Activate Virtual Environment   | `source venv/bin/activate` / `venv\Scripts\activate.bat` |
-| Install Python Packages        | `pip install -r requirements.txt`               |
-| Build Docker Image              | `docker build -t <image-name> .`                |
-| Run Docker Container            | `docker run -it --rm <image-name>`               |
-| Push Code to GitHub             | `git add . && git commit -m "message" && git push` |
+Open your browser at <http://127.0.0.1:8000> or explore the API docs at <http://127.0.0.1:8000/docs>.
 
 ---
 
-# 📋 Notes
+## ✅ 6. Run the Test Suite
 
-- Install **Homebrew** first on Mac.
-- Install and configure **Git** and **SSH** before cloning.
-- Use **Python 3.10+** and **virtual environments** for Python projects.
-- **Docker** is optional depending on the project.
+This project includes **unit**, **integration**, and **end-to-end** tests:
+
+```bash
+pytest
+```
+
+Make sure everything passes before you push!
 
 ---
 
-# 📎 Quick Links
+## 🐳 7. Docker (Optional)
 
-- [Homebrew](https://brew.sh/)
-- [Git Downloads](https://git-scm.com/downloads)
-- [Python Downloads](https://www.python.org/downloads/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [GitHub SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+1. **Build** the image:
 
+   ```bash
+   docker build -t fastapi-calculator .
+   ```
 
+2. **Run** the container (reads your `.env`):
+
+   ```bash
+   docker run --env-file .env -p 8000:8000 fastapi-calculator
+   ```
+
+---
+
+## 🛠️ 8. GitHub Actions & CI
+
+On every push, GitHub Actions will:
+
+1. Run **pytest** (all tests).
+2. Build the Docker image.
+3. (If configured) Push the image to Docker Hub.
+
+See `.github/workflows/ci.yml` for the full pipeline.
+
+---
+
+## 🔖 Cheat-Sheet & Useful Commands
+
+| Task                          | Command                                                                 |
+|-------------------------------|-------------------------------------------------------------------------|
+| Create venv                   | `python3 -m venv venv`                                                  |
+| Activate venv                 | macOS/Linux: `source venv/bin/activate` / Windows: `venv\Scripts\activate` |
+| Install dependencies          | `pip install -r requirements.txt`                                       |
+| Initialize DB                 | `python -c "from app.db import init_db; init_db()"`                     |
+| Run server (dev)              | `uvicorn main:app --reload`                                             |
+| Run tests                     | `pytest`                                                                |
+| Build Docker image            | `docker build -t fastapi-calculator .`                                  |
+| Run Docker container          | `docker run --env-file .env -p 8000:8000 fastapi-calculator`            |
+| Show API docs                 | Visit `/docs` on your running server                                    |
+
+---
+
+## 📚 Quick Links
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [SQLAlchemy](https://www.sqlalchemy.org/)
+- [Uvicorn](https://www.uvicorn.org/)
+- [Docker](https://www.docker.com/)
+- [Pytest](https://docs.pytest.org/)
+- [GitHub Actions](https://docs.github.com/actions)
